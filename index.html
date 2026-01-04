@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELECTAMA - Music DNA Matching</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #111111;
+            --accent: #818cf8; /* 以前より少し鮮やかなパープル */
+            --text: #ffffff;
+            --text-dim: #a1a1aa;
+        }
+        body {
+            font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 60px 20px; }
+        
+        header { text-align: center; margin-bottom: 60px; }
+        /* タイトルロゴのデザイン性をアップ */
+        h1 { 
+            font-size: 2.8rem; 
+            letter-spacing: 8px; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, #818cf8 0%, #f472b6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .sub-desc { 
+            font-size: 0.7rem; 
+            color: var(--text-dim); 
+            margin-top: 5px; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* セクションタイトル */
+        .section-title { font-size: 0.7rem; color: var(--accent); letter-spacing: 3px; text-align: center; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
+        
+        /* タグ選択エリア */
+        .tag-selector { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 50px; }
+        .tag-btn { 
+            background: #161618; 
+            border: 1px solid #27272a; 
+            color: white; 
+            padding: 12px 20px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+        }
+        .tag-btn:hover { border-color: var(--accent); }
+        .tag-btn.active { 
+            background: var(--accent); 
+            border-color: var(--accent); 
+            color: white; 
+            box-shadow: 0 0 20px rgba(129, 140, 248, 0.4); 
+            transform: scale(1.05);
+        }
+
+        /* ボタン */
+        #match-btn { 
+            width: 100%; 
+            padding: 22px; 
+            border-radius: 16px; 
+            border: none; 
+            background: white; 
+            color: black; 
+            font-weight: 900; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            display: none; 
+            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+        }
+
+        /* 結果カードのデザイン */
+        #result-area { display: none; margin-top: 40px; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .result-card { 
+            background: linear-gradient(145deg, #1a1a1c, #0d0d0e); 
+            border-radius: 40px; 
+            padding: 50px 25px; 
+            border: 1px solid #333; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6); 
+        }
+        .match-percent { font-size: 4.5rem; font-weight: 900; color: #fff; margin-bottom: 0px; font-style: italic; letter-spacing: -2px; }
+        .match-label { font-size: 0.7rem; color: var(--accent); letter-spacing: 4px; margin-bottom: 35px; font-weight: 800; }
+        
+        .embed-container { margin-bottom: 30px; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .embed-container iframe { width: 100%; border: none; vertical-align: bottom; }
+
+        .song-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; line-height: 1.2; }
+        .artist-name { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 30px; font-weight: 600; }
+        .comment-box { border-left: 3px solid var(--accent); padding: 10px 20px; font-size: 0.9rem; color: #ddd; margin-bottom: 10px; text-align: left; background: rgba(255,255,255,0.03); border-radius: 0 10px 10px 0; }
+
+        .share-btn { width: 100%; background: #1DA1F2; color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 800; cursor: pointer; margin-bottom: 15px; font-size: 1rem; }
+
+        /* プロフィール */
+        .creator-section { margin-top: 120px; text-align: center; border-top: 1px solid #222; padding-top: 50px; }
+        .creator-icon { width: 80px; height: 80px; border-radius: 50%; background: #222; overflow: hidden; border: 2px solid #333; margin: 0 auto 15px; }
+        .creator-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .creator-name { font-size: 1rem; font-weight: 800; letter-spacing: 1px; color: var(--text); margin-bottom: 15px; }
+        .sns-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .sns-link { font-size: 0.65rem; color: var(--text-dim); text-decoration: none; border: 1px solid #333; padding: 8px 16px; border-radius: 50px; background: #0f0f10; transition: 0.2s; }
+        .sns-link:hover { color: white; border-color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>SELECTAMA</h1>
+        <p class="sub-desc">Music DNA Analysis</p>
+    </header>
+
+    <div class="section-title">Choice Elements</div>
+    <div id="tag-container" class="tag-selector"></div>
+    <button id="match-btn" onclick="showMatch()">Start Matching</button>
+
+    <div id="result-area">
+        <div class="section-title">Best Match</div>
+        <div class="result-card">
+            <div class="match-percent" id="res-percent">0%</div>
+            <div class="match-label">MATCHING RATE</div>
+            <div id="embed-area" class="embed-container"></div>
+            <div class="song-title" id="res-title">-</div>
+            <div class="artist-name" id="res-artist">-</div>
+            <div id="res-comment" class="comment-box"></div>
+        </div>
+        <button class="share-btn" onclick="shareX()">Share on 𝕏</button>
+        <button onclick="location.reload()" style="background:none; border:none; color:var(--text-dim); width:100%; cursor:pointer; font-size:0.8rem; margin-top:10px;">Reset Filters</button>
+    </div>
+
+    <div class="creator-section">
+        <div class="creator-info">
+            <div class="creator-icon"><img src="icon.png" alt="たま"></div>
+            <div class="creator-name">Curated by たま (@sunkorot)</div>
+            <div class="sns-links">
+                <a href="https://lin.ee/..." class="sns-link" target="_blank">LINE MUSIC</a>
+                <a href="http://googleusercontent.com/spotify.com/6" class="sns-link" target="_blank">Spotify</a>
+                <a href="https://x.com/sunkorot" class="sns-link" target="_blank">𝕏 (Twitter)</a>
+                <a href="https://on.soundcloud.com/iDHDBLdEl4fV2VCLzw" class="sns-link" target="_blank">SoundCloud</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTArcbyBXRaH0XklEVYPzISsOv37VX352ZaYYPKu6ntDon8nOJDUT6Q8xob2wXUhJJW0LxpZsps5Evz/pub?output=csv';
+    const mainTags = ["#rock", "#technical", "#Internets", "#loud", "#chill", "#energy", "#dark", "#possitive", "#indies", "#male", "#female", "#inst"];
+    let selectedTags = new Set();
+    let musicData = [];
+
+    async function init() {
+        try {
+            const res = await fetch(CSV_URL);
+            const csvText = await res.text();
+            const rows = csvText.split(/\r?\n/).slice(1);
+            musicData = rows.map(row => {
+                const c = row.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                return { title: c[0], artist: c[1], tags: c[2], url: c[3], comment: c[4] };
+            }).filter(m => m.title);
+            renderTags();
+        } catch (e) { console.error(e); }
+    }
+
+    function renderTags() {
+        const container = document.getElementById('tag-container');
+        mainTags.forEach(tag => {
+            const btn = document.createElement('button');
+            btn.className = 'tag-btn';
+            btn.innerText = tag;
+            btn.onclick = () => toggleTag(tag, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function toggleTag(tag, btn) {
+        if (selectedTags.has(tag)) { selectedTags.delete(tag); btn.classList.remove('active'); }
+        else { selectedTags.add(tag); btn.classList.add('active'); }
+        document.getElementById('match-btn').style.display = selectedTags.size > 0 ? 'block' : 'none';
+    }
+
+    function getEmbedHtml(url) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const videoId = url.split('v=')[1] || url.split('/').pop().split('?')[0];
+            return `<iframe height="280" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+        } else if (url.includes('http://googleusercontent.com/spotify.com/7')) {
+            const spotifyPath = url.split('http://googleusercontent.com/spotify.com/8')[1].split('?')[0];
+            return `<iframe src="http://googleusercontent.com/spotify.com/9{spotifyPath}" height="152" allow="encrypted-media"></iframe>`;
+        }
+        return '';
+    }
+
+    function showMatch() {
+        let results = musicData.map(song => {
+            let matchCount = 0;
+            selectedTags.forEach(t => { if (song.tags.includes(t)) matchCount++; });
+            let percent = Math.round((matchCount / selectedTags.size) * 100);
+            return { ...song, percent };
+        });
+        results.sort((a, b) => b.percent - a.percent || Math.random() - 0.5);
+        const best = results[0];
+
+        document.getElementById('res-percent').innerText = `${best.percent}%`;
+        document.getElementById('res-title').innerText = best.title;
+        document.getElementById('res-artist').innerText = best.artist;
+        document.getElementById('res-comment').innerText = best.comment || "たまのおすすめの一曲です。";
+        document.getElementById('embed-area').innerHTML = getEmbedHtml(best.url);
+
+        document.getElementById('tag-container').parentElement.querySelector('.section-title').style.display = 'none';
+        document.getElementById('tag-container').style.display = 'none';
+        document.getElementById('match-btn').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function shareX() {
+        const title = document.getElementById('res-title').innerText;
+        const percent = document.getElementById('res-percent').innerText;
+        const text = `SELECTAMA：マッチ率 ${percent}\nたま(@sunkorot)が選ぶ私への一曲は「${title}」でした！\n#SELECTAMA #MUSICDNA\n`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+    }
+    init();
+</script>
+</body>
+</html>
