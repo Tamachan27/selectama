@@ -7,9 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --main-grad: linear-gradient(135deg, #e0e7ff 0%, #fbcfe8 50%, #e9d5ff 100%);
-            --accent: #6366f1;
-            --glass: rgba(255, 255, 255, 0.5);
+            --main-grad: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            --accent: #4338ca;
+            --glass: rgba(255, 255, 255, 0.8);
             --text: #1f2937;
         }
         body {
@@ -19,54 +19,46 @@
             margin: 0; padding: 0; color: var(--text);
         }
         .container { max-width: 600px; margin: 0 auto; padding: 60px 20px; }
-        
-        header { text-align: center; margin-bottom: 50px; }
-        h1 { font-size: 3rem; letter-spacing: 6px; font-weight: 900; color: #4338ca; margin: 0; }
-        .sub-desc { font-size: 0.7rem; color: #6366f1; letter-spacing: 3px; font-weight: 800; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 3rem; letter-spacing: 6px; font-weight: 900; color: var(--accent); margin: 0; }
+        .sub-desc { font-size: 0.8rem; color: var(--accent); letter-spacing: 2px; font-weight: 700; margin-top: 10px; }
 
-        /* タグ選択 */
-        .tag-selector { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 30px; }
+        .guide-text { text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; color: #4b5563; }
+
+        .tag-selector { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
         .tag-btn { 
-            background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); 
-            color: #4338ca; padding: 12px 18px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: 600; 
+            background: var(--glass); border: 1px solid #d1d5db; 
+            color: #374151; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 0.85rem; 
         }
-        .tag-btn.active { background: #4338ca; color: white; }
+        .tag-btn::before { content: "["; }
+        .tag-btn::after { content: "]"; }
+        .tag-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         #match-btn { 
-            width: 100%; padding: 20px; border-radius: 20px; border: none; 
-            background: #4338ca; color: white; font-weight: 900; font-size: 1.1rem; 
-            cursor: pointer; display: none; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2);
+            width: 100%; padding: 20px; border-radius: 15px; border: none; 
+            background: var(--accent); color: white; font-weight: 900; font-size: 1.1rem; 
+            cursor: pointer; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        /* 結果エリア */
         #result-area { display: none; margin-top: 40px; }
-        /* 画像として保存する範囲 */
-        #capture-target { padding: 20px; background: var(--main-grad); border-radius: 30px; }
-        
+        #capture-target { padding: 30px 15px; background: var(--main-grad); border-radius: 20px; }
         .result-card { 
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px);
-            border-radius: 30px; padding: 30px 20px; border: 1px solid white; 
-            text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 30px 20px; 
+            text-align: center; margin-bottom: 20px; border: 1px solid #e5e7eb;
         }
-        .match-percent { font-size: 2.5rem; font-weight: 900; color: #4338ca; }
-        .song-title { font-size: 1.4rem; font-weight: 900; margin: 10px 0 5px; }
-        .artist-name { color: #6b7280; font-size: 0.9rem; margin-bottom: 20px; font-weight: 600; }
-        
-        .yt-btn { 
-            display: inline-block; background: #ff0000; color: white; 
-            padding: 10px 20px; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: bold; 
-        }
+        .match-percent { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+        .song-title { font-size: 1.4rem; font-weight: 900; margin: 10px 0; }
+        .artist-name { color: #6b7280; font-size: 0.9rem; margin-bottom: 20px; }
+        .yt-btn { display: inline-block; background: #ff0000; color: white; padding: 10px 25px; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: bold; }
 
-        /* 操作ボタン */
         .action-btns { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .btn-save { background: #10b981; color: white; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; }
-        .btn-x { background: #000; color: white; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; }
+        .btn-save { background: #10b981; color: white; padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; }
+        .btn-x { background: #000; color: white; padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; }
 
-        /* プロフィール */
-        .creator-section { margin-top: 80px; text-align: center; padding: 40px 20px; border-top: 1px solid rgba(0,0,0,0.05); }
-        .creator-name { font-weight: 900; font-size: 1.1rem; color: #4338ca; margin-bottom: 15px; }
-        .sns-links { display: flex; justify-content: center; gap: 15px; }
-        .sns-link { text-decoration: none; font-weight: bold; color: #6366f1; font-size: 0.8rem; background: white; padding: 10px 20px; border-radius: 50px; }
+        .creator-section { margin-top: 60px; text-align: center; padding: 30px; border-top: 1px solid #d1d5db; }
+        .creator-name { font-weight: 900; font-size: 1.2rem; color: var(--accent); margin-bottom: 15px; }
+        .sns-links { display: flex; justify-content: center; gap: 20px; }
+        .sns-link { text-decoration: none; font-weight: bold; color: var(--accent); font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -77,26 +69,27 @@
         <p class="sub-desc">MUSIC DNA ANALYSIS</p>
     </header>
 
+    <p class="guide-text">好きな要素をすべて選んで下さい（複数選択OK）</p>
     <div id="tag-container" class="tag-selector"></div>
     <button id="match-btn" onclick="showMatch()">Start Matching</button>
 
     <div id="result-area">
         <div id="capture-target">
-            <h2 style="text-align:center; font-size:0.8rem; letter-spacing:3px; color:#4338ca;">MY BEST MATCHES</h2>
+            <h2 style="text-align:center; font-size:0.9rem; color:var(--accent); letter-spacing:2px; margin-bottom:20px;">SELECTED FOR YOU</h2>
             <div id="cards-container"></div>
         </div>
         
         <div class="action-btns">
-            <button class="btn-save" onclick="saveAsImage()">画像を保存する (Save Image)</button>
-            <button class="btn-x" onclick="shareX()">𝕏に投稿する (Post to 𝕏)</button>
-            <button onclick="location.reload()" style="background:none; border:none; color:#6b7280; cursor:pointer; margin-top:10px;">Reset</button>
+            <button class="btn-save" onclick="saveAsImage()">結果を画像で保存する</button>
+            <button class="btn-x" onclick="shareX()">𝕏に投稿する</button>
+            <button onclick="location.reload()" style="background:none; border:none; color:#6b7280; cursor:pointer; margin-top:10px;">選び直す</button>
         </div>
     </div>
 
     <div class="creator-section">
         <div class="creator-name">Curated by たま</div>
         <div class="sns-links">
-            <a href="https://open.spotify.com/user/..." class="sns-link" target="_blank">Spotify</a>
+            <a href="https://open.spotify.com/user/sunkoro_t" class="sns-link" target="_blank">Spotify</a>
             <a href="https://x.com/sunkorot" class="sns-link" target="_blank">𝕏 (Twitter)</a>
             <a href="https://on.soundcloud.com/iDHDBLdEl4fV2VCLzw" class="sns-link" target="_blank">SoundCloud</a>
         </div>
@@ -105,7 +98,8 @@
 
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTArcbyBXRaH0XklEVYPzISsOv37VX352ZaYYPKu6ntDon8nOJDUT6Q8xob2wXUhJJW0LxpZsps5Evz/pub?output=csv';
-    const mainTags = ["#rock", "#technical", "#Internets", "#loud", "#chill", "#energy", "#dark", "#possitive", "#indies", "#male", "#female", "#inst"];
+    // 新しいタグリスト（male/femaleを削除し、midnight/emotionalを追加）
+    const displayTags = ["rock", "technical", "Internets", "loud", "chill", "energy", "dark", "possitive", "indies", "midnight", "emotional", "inst"];
     let selectedTags = new Set();
     let musicData = [];
 
@@ -124,7 +118,7 @@
 
     function renderTags() {
         const container = document.getElementById('tag-container');
-        mainTags.forEach(tag => {
+        displayTags.forEach(tag => {
             const btn = document.createElement('button');
             btn.className = 'tag-btn';
             btn.innerText = tag;
@@ -156,11 +150,12 @@
                     <div class="match-percent">${song.percent}%</div>
                     <div class="song-title">${song.title}</div>
                     <div class="artist-name">${song.artist}</div>
-                    <a href="${song.url}" target="_blank" class="yt-btn">▶ YouTube / Listen</a>
+                    <a href="${song.url}" target="_blank" class="yt-btn">YouTubeで聴く</a>
                 </div>
             `;
         });
 
+        document.querySelector('.guide-text').style.display = 'none';
         document.getElementById('tag-container').style.display = 'none';
         document.getElementById('match-btn').style.display = 'none';
         document.getElementById('result-area').style.display = 'block';
@@ -169,18 +164,21 @@
 
     async function saveAsImage() {
         const target = document.getElementById('capture-target');
-        const canvas = await html2canvas(target, { backgroundColor: null, scale: 2 });
+        const canvas = await html2canvas(target, { scale: 2 });
         const link = document.createElement('a');
-        link.download = 'SELECTAMA_Result.png';
+        link.download = 'SELECTAMA.png';
         link.href = canvas.toDataURL();
         link.click();
     }
 
     function shareX() {
-        const text = `SELECTAMA：私にぴったりの曲はこれでした！\n#SELECTAMA #MUSICDNA\n`;
+        const text = `SELECTAMA：たま(@sunkorot)が選ぶ私への一曲はこれでした！\n`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
     }
     init();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
