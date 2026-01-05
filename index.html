@@ -9,7 +9,7 @@
         :root {
             --main-grad: linear-gradient(135deg, #fbcfe8 0%, #e0e7ff 100%);
             --accent: #4338ca;
-            --glass: rgba(255, 255, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.7);
             --text: #1f2937;
         }
         body {
@@ -23,9 +23,9 @@
         h1 { font-size: 3.2rem; letter-spacing: 8px; font-weight: 900; color: #4338ca; margin: 0; }
         .sub-desc { font-size: 0.75rem; color: #6366f1; letter-spacing: 4px; font-weight: 800; }
 
-        .guide-text { text-align: center; font-size: 0.95rem; font-weight: 900; margin-bottom: 20px; color: #4338ca; }
+        .guide-text { text-align: center; font-size: 0.95rem; font-weight: 900; margin: 20px 0; color: #4338ca; }
 
-        /* 説明エリアをそのまま選択ボタンに */
+        /* タグ選択ガイド */
         .tag-guide {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
             margin-bottom: 30px; background: rgba(255, 255, 255, 0.4);
@@ -35,9 +35,7 @@
             background: white; padding: 15px; border-radius: 15px;
             display: flex; flex-direction: column; border: 3px solid transparent;
             cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            text-align: left;
         }
-        .tag-info:hover { transform: translateY(-2px); border-color: #e0e7ff; }
         .tag-info.active { border-color: var(--accent); background: #f5f7ff; }
         .tag-name { font-weight: 900; color: var(--accent); margin-bottom: 4px; font-size: 0.9rem; text-transform: uppercase; }
         .tag-desc { color: #6b7280; font-size: 0.65rem; line-height: 1.4; font-weight: 600; }
@@ -49,30 +47,47 @@
         }
 
         /* 結果エリア */
-        #result-area { display: none; margin-top: 40px; }
-        #capture-target { padding: 35px 15px; background: var(--main-grad); border-radius: 40px; }
-        .result-card { 
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px);
-            border-radius: 35px; padding: 40px 25px; border: 1px solid white; 
-            text-align: center; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        #result-area { display: none; margin-top: 30px; }
+        #capture-target { padding: 30px 15px; background: var(--main-grad); border-radius: 40px; }
+        
+        /* 1位の曲 */
+        .best-match {
+            background: rgba(255, 255, 255, 0.85); border-radius: 35px; padding: 40px 20px;
+            text-align: center; border: 2px solid white; margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
-        .match-percent { font-size: 3.5rem; font-weight: 900; color: #4338ca; font-style: italic; }
-        .song-title { font-size: 1.6rem; font-weight: 900; margin: 15px 0 5px; line-height: 1.2; }
-        .artist-name { color: #6b7280; font-size: 1.1rem; margin-bottom: 25px; font-weight: 600; }
-        .yt-btn { display: inline-block; background: #ff0000; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 900; }
+        .best-label { font-size: 0.75rem; font-weight: 900; color: #4338ca; letter-spacing: 3px; margin-bottom: 10px; }
+        .best-title { font-size: 1.8rem; font-weight: 900; margin: 10px 0; line-height: 1.2; }
+        .best-artist { color: #6b7280; font-size: 1.1rem; font-weight: 600; margin-bottom: 25px; }
+        
+        /* 2位・3位の曲 */
+        .other-matches { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .other-card {
+            background: rgba(255, 255, 255, 0.7); border-radius: 25px; padding: 20px 10px;
+            text-align: center; border: 1px solid white;
+        }
+        .other-label { font-size: 0.6rem; font-weight: 800; color: #6366f1; margin-bottom: 5px; }
+        .other-title { font-size: 0.9rem; font-weight: 900; margin: 5px 0; }
+        .other-artist { font-size: 0.75rem; color: #6b7280; margin-bottom: 15px; }
+
+        .yt-btn { display: inline-block; background: #ff0000; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-size: 0.75rem; font-weight: 900; }
 
         .action-btns { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .btn-save { background: #10b981; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; }
-        .btn-x { background: #000; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; }
+        .btn-save { background: #10b981; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; font-size: 1rem; }
+        .btn-x { background: #000; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; font-size: 1rem; }
 
-        /* SNSセクション */
-        .creator-section { margin-top: 100px; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 50px; }
-        .creator-name { font-weight: 900; font-size: 1.2rem; color: #4338ca; margin-bottom: 25px; }
-        .sns-container { 
-            display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; 
-            background: rgba(255,255,255,0.4); padding: 20px; border-radius: 30px; border: 1px solid white;
+        /* フッターセクション（1行に整理） */
+        .footer-line {
+            margin-top: 60px; display: flex; align-items: center; justify-content: center;
+            gap: 15px; padding: 20px; background: rgba(255,255,255,0.3); border-radius: 40px; border: 1px solid white;
         }
-        .sns-link { text-decoration: none; font-weight: 800; color: white; font-size: 0.75rem; padding: 12px 20px; border-radius: 50px; transition: 0.2s; }
+        .creator-small { font-weight: 900; font-size: 0.75rem; color: #4338ca; white-space: nowrap; }
+        .sns-mini-group { display: flex; gap: 8px; }
+        .sns-mini { text-decoration: none; font-weight: 900; color: white; font-size: 0.65rem; padding: 10px 15px; border-radius: 50px; }
+
+        @media (max-width: 480px) {
+            .other-matches { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -83,14 +98,14 @@
         <p class="sub-desc">MUSIC DNA ANALYSIS</p>
     </header>
 
-    <p class="guide-text">好きな要素を選んで下さい（複数選択OK）</p>
+    <p class="guide-text">好きな要素を選んで下さい</p>
 
     <div id="tag-guide-area" class="tag-guide">
         <div class="tag-info" data-tag="rock"><span class="tag-name">rock</span><span class="tag-desc">王道でカッコいいロック</span></div>
         <div class="tag-info" data-tag="technical"><span class="tag-name">technical</span><span class="tag-desc">変拍子などの精巧な技術・構成</span></div>
         <div class="tag-info" data-tag="Internets"><span class="tag-name">Internets</span><span class="tag-desc">ネット発アーティスト</span></div>
-        <div class="tag-info" data-tag="loud"><span class="tag-name">loud</span><span class="tag-desc">ボーカル・バンド共にパワフル（うるさい）</span></div>
-        <div class="tag-info" data-tag="chill"><span class="tag-name">chill</span><span class="tag-desc">ゆったりリラックス、お酒でゆらゆらできそう</span></div>
+        <div class="tag-info" data-tag="loud"><span class="tag-name">loud</span><span class="tag-desc">パワフル（うるさい）</span></div>
+        <div class="tag-info" data-tag="chill"><span class="tag-name">chill</span><span class="tag-desc">お酒でゆらゆらできそう</span></div>
         <div class="tag-info" data-tag="energy"><span class="tag-name">energy</span><span class="tag-desc">テンションが上がる曲</span></div>
         <div class="tag-info" data-tag="dark"><span class="tag-name">dark</span><span class="tag-desc">闇を感じる・重い雰囲気</span></div>
         <div class="tag-info" data-tag="positive"><span class="tag-name">positive</span><span class="tag-desc">明るくて前向きな曲</span></div>
@@ -98,16 +113,17 @@
         <div class="tag-info" data-tag="midnight"><span class="tag-name">midnight</span><span class="tag-desc">深夜に一人で浸りたい時</span></div>
         <div class="tag-info" data-tag="emotional"><span class="tag-name">emotional</span><span class="tag-desc">心に響く・感動する曲</span></div>
         <div class="tag-info" data-tag="inst"><span class="tag-name">inst</span><span class="tag-desc">歌なし・楽器主役の曲</span></div>
-        <div class="tag-info" data-tag="idol"><span class="tag-name">idol</span><span class="tag-desc">可愛さとカッコよさが共存する楽曲</span></div>
-        <div class="tag-info" data-tag="dance"><span class="tag-name">dance</span><span class="tag-desc">勝手に体が動いちゃう、ビートの効いた曲</span></div>
+        <div class="tag-info" data-tag="idol"><span class="tag-name">idol</span><span class="tag-desc">可愛さとカッコよさの共存</span></div>
+        <div class="tag-info" data-tag="dance"><span class="tag-name">dance</span><span class="tag-desc">ビートの効いた曲</span></div>
     </div>
 
     <button id="match-btn" onclick="showMatch()">Start Matching</button>
 
     <div id="result-area">
         <div id="capture-target">
-            <h2 style="text-align:center; font-size:0.8rem; letter-spacing:4px; color:#4338ca; margin-bottom:20px;">SELECTED FOR YOU</h2>
-            <div id="cards-container"></div>
+            <h2 style="text-align:center; font-size:0.7rem; letter-spacing:4px; color:#4338ca; margin-bottom:20px;">DNA ANALYSIS RESULT</h2>
+            <div id="best-match-container"></div>
+            <div id="other-matches-container" class="other-matches"></div>
         </div>
         <div class="action-btns">
             <button class="btn-save" onclick="saveAsImage()">結果を画像で保存する</button>
@@ -116,12 +132,12 @@
         </div>
     </div>
 
-    <div class="creator-section">
-        <div class="creator-name">Created by たま</div>
-        <div class="sns-container">
-            <a href="https://x.com/sunkorot" class="sns-link" target="_blank" style="background:#000;">𝕏 (Twitter)</a>
-            <a href="https://open.spotify.com/user/73b31vzfia5bxj8llianbwveu?si=frw4_aYGQcGBNJs6b-ZsNg6" class="sns-link" style="background:#1DB954;">Spotify</a>
-            <a href="https://on.soundcloud.com/iDHDBLdEl4fV2VCLzw" class="sns-link" target="_blank" style="background:#ff5500;">SoundCloud</a>
+    <div class="footer-line">
+        <div class="creator-small">Created by たま</div>
+        <div class="sns-mini-group">
+            <a href="https://x.com/sunkorot" class="sns-mini" target="_blank" style="background:#000;">𝕏</a>
+            <a href="https://www.google.com/url?sa=E&source=gmail&q=https://open.spotify.com/track/TRACK_ID" class="sns-mini" style="background:#1DB954;">Spotify</a>
+            <a href="https://on.soundcloud.com/iDHDBLdEl4fV2VCLzw" class="sns-mini" target="_blank" style="background:#ff5500;">SC</a>
         </div>
     </div>
 </div>
@@ -148,13 +164,8 @@
         document.querySelectorAll('.tag-info').forEach(info => {
             info.onclick = () => {
                 const tag = info.getAttribute('data-tag');
-                if (selectedTags.has(tag)) {
-                    selectedTags.delete(tag);
-                    info.classList.remove('active');
-                } else {
-                    selectedTags.add(tag);
-                    info.classList.add('active');
-                }
+                if (selectedTags.has(tag)) { selectedTags.delete(tag); info.classList.remove('active'); }
+                else { selectedTags.add(tag); info.classList.add('active'); }
                 document.getElementById('match-btn').style.display = selectedTags.size > 0 ? 'block' : 'none';
             };
         });
@@ -164,16 +175,34 @@
         let results = musicData.map(song => {
             let matchCount = 0;
             selectedTags.forEach(t => { if (song.tags.includes(t)) matchCount++; });
-            let percent = Math.round((matchCount / selectedTags.size) * 100);
-            return { ...song, percent };
+            let score = matchCount / selectedTags.size;
+            return { ...song, score };
         });
-        results.sort((a, b) => b.percent - a.percent || Math.random() - 0.5);
-        const bestThree = results.slice(0, 3).filter(r => r.percent > 0);
-        const container = document.getElementById('cards-container');
-        container.innerHTML = '';
-        bestThree.forEach(song => {
-            container.innerHTML += `<div class="result-card"><div class="match-percent">${song.percent}%</div><div class="song-title">${song.title}</div><div class="artist-name">${song.artist}</div><a href="${song.url}" target="_blank" class="yt-btn">YouTubeで聴く</a></div>`;
-        });
+
+        results.sort((a, b) => b.score - a.score || Math.random() - 0.5);
+        const topSongs = results.slice(0, 3).filter(r => r.score > 0);
+
+        if (topSongs.length > 0) {
+            const best = topSongs[0];
+            document.getElementById('best-match-container').innerHTML = `
+                <div class="best-match">
+                    <div class="best-label">YOUR BEST MATCH</div>
+                    <div class="best-title">${best.title}</div>
+                    <div class="best-artist">${best.artist}</div>
+                    <a href="${best.url}" target="_blank" class="yt-btn">YouTubeで聴く</a>
+                </div>`;
+            
+            const others = topSongs.slice(1);
+            const otherContainer = document.getElementById('other-matches-container');
+            otherContainer.innerHTML = others.map(song => `
+                <div class="other-card">
+                    <div class="other-label">ALSO RECOMMENDED</div>
+                    <div class="other-title">${song.title}</div>
+                    <div class="other-artist">${song.artist}</div>
+                    <a href="${song.url}" target="_blank" class="yt-btn" style="padding:6px 12px; font-size:0.6rem;">YouTube</a>
+                </div>`).join('');
+        }
+
         document.getElementById('tag-guide-area').style.display = 'none';
         document.querySelector('.guide-text').style.display = 'none';
         document.getElementById('match-btn').style.display = 'none';
@@ -185,13 +214,13 @@
         const target = document.getElementById('capture-target');
         const canvas = await html2canvas(target, { scale: 2, useCORS: true });
         const link = document.createElement('a');
-        link.download = 'SELECTAMA.png';
+        link.download = 'SELECTAMA_Result.png';
         link.href = canvas.toDataURL();
         link.click();
     }
 
     function shareX() {
-        const text = `SELECTAMA：たま(@sunkorot)が選ぶ、私へのベストマッチな曲はこれ！\n#SELECTAMA\n`;
+        const text = `SELECTAMA：たま(@sunkorot)が選ぶ、私へのベストマッチな曲はこれでした！\n#SELECTAMA\n`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
     }
     init();
