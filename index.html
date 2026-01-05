@@ -26,7 +26,6 @@
         .notice-text { text-align: center; font-size: 0.65rem; color: #6b7280; font-weight: normal; margin-bottom: 5px; }
         .guide-text { text-align: center; font-size: 0.95rem; font-weight: 900; margin-bottom: 20px; color: #4338ca; }
 
-        /* タグ選択ガイド */
         .tag-guide {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
             margin-bottom: 30px; background: rgba(255, 255, 255, 0.4);
@@ -47,7 +46,6 @@
             cursor: pointer; display: none; box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2);
         }
 
-        /* 結果エリア */
         #result-area { display: none; margin-top: 30px; }
         #capture-target { padding: 30px 15px; background: var(--main-grad); border-radius: 40px; }
         
@@ -79,7 +77,6 @@
         .btn-save { background: #10b981; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; }
         .btn-x { background: #000; color: white; padding: 20px; border-radius: 20px; border: none; font-weight: 800; cursor: pointer; }
 
-        /* フッター */
         .footer-line {
             margin-top: 60px; display: flex; align-items: center; justify-content: center;
             gap: 15px; padding: 15px; background: rgba(255,255,255,0.3); border-radius: 40px; border: 1px solid white;
@@ -129,7 +126,7 @@
         </div>
         <div class="action-btns">
             <button class="btn-save" onclick="saveAsImage()">結果を画像で保存する</button>
-            <button class="btn-x" onclick="shareX()">𝕏に投稿する</button>
+            <button id="share-x-btn" class="btn-x">𝕏に投稿する</button>
             <button onclick="location.reload()" style="background:none; border:none; color:#6b7280; cursor:pointer; margin-top:10px; font-weight:bold;">選び直す</button>
         </div>
     </div>
@@ -138,7 +135,7 @@
         <div class="creator-small">Created by たま</div>
         <div class="sns-mini-group">
             <a href="https://x.com/sunkorot" class="sns-mini" target="_blank" style="background:#000;">𝕏</a>
-            <a href="https://open.spotify.com/user/73b31vzfia5bxj8llianbwveu?si=frw4_aYGQcGBNJs6b-ZsNg&nd=1&dlsi=9f154298a61449a26" class="sns-mini" target="_blank" style="background:#1DB954;">Spotify</a>
+            <a href="https://open.spotify.com/user/73b31vzfia5bxj8llianbwveu?si=frw4_aYGQcGBNJs6b-ZsNg&nd=1&dlsi=9f154298a61449a27" class="sns-mini" target="_blank" style="background:#1DB954;">Spotify</a>
             <a href="https://on.soundcloud.com/iDHDBLdEl4fV2VCLzw" class="sns-mini" target="_blank" style="background:#ff5500;">SoundCloud</a>
         </div>
     </div>
@@ -148,6 +145,7 @@
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTArcbyBXRaH0XklEVYPzISsOv37VX352ZaYYPKu6ntDon8nOJDUT6Q8xob2wXUhJJW0LxpZsps5Evz/pub?output=csv';
     let selectedTags = new Set();
     let musicData = [];
+    let bestSong = null;
 
     async function init() {
         try {
@@ -173,6 +171,10 @@
         });
     }
 
+    function getSearchUrl(artist, title) {
+        return `https://www.youtube.com/results?search_query=${encodeURIComponent(artist + ' ' + title)}`;
+    }
+
     function showMatch() {
         let results = musicData.map(song => {
             let matchCount = 0;
@@ -185,13 +187,13 @@
         const topSongs = results.slice(0, 3).filter(r => r.score > 0);
 
         if (topSongs.length > 0) {
-            const best = topSongs[0];
+            bestSong = topSongs[0];
             document.getElementById('best-match-container').innerHTML = `
                 <div class="best-match">
                     <div class="best-label">YOUR BEST MATCH</div>
-                    <div class="best-title">${best.title}</div>
-                    <div class="best-artist">${best.artist}</div>
-                    <a href="${best.url}" target="_blank" class="yt-btn">YouTubeで聴く</a>
+                    <div class="best-title">${bestSong.title}</div>
+                    <div class="best-artist">${bestSong.artist}</div>
+                    <a href="${getSearchUrl(bestSong.artist, bestSong.title)}" target="_blank" class="yt-btn">YouTubeで聴く</a>
                 </div>`;
             
             const others = topSongs.slice(1);
@@ -201,7 +203,7 @@
                     <div class="other-label">ALSO RECOMMENDED</div>
                     <div class="other-title">${song.title}</div>
                     <div class="other-artist">${song.artist}</div>
-                    <a href="${song.url}" target="_blank" class="yt-btn" style="padding:6px 12px; font-size:0.6rem;">YouTube</a>
+                    <a href="${getSearchUrl(song.artist, song.title)}" target="_blank" class="yt-btn" style="padding:6px 12px; font-size:0.6rem;">YouTube</a>
                 </div>`).join('');
         }
 
@@ -210,6 +212,8 @@
         document.querySelector('.notice-text').style.display = 'none';
         document.getElementById('match-btn').style.display = 'none';
         document.getElementById('result-area').style.display = 'block';
+        
+        document.getElementById('share-x-btn').onclick = shareX;
         window.scrollTo(0,0);
     }
 
@@ -223,7 +227,8 @@
     }
 
     function shareX() {
-        const text = `私のベストマッチな曲はこれでした！\n#SELECTAMA\n`;
+        if (!bestSong) return;
+        const text = `私のベストマッチな曲は${bestSong.artist}の「${bestSong.title}」でした！\n#SELECTAMA\n`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
     }
     init();
